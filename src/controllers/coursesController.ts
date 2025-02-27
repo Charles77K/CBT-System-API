@@ -11,7 +11,10 @@ export const createCourse = createOne<ICourses>(Courses);
 
 export const getAllCourses = getAll<ICourses>(Courses);
 
-export const getCourse = getOne<ICourses>(Courses);
+export const getCourse = getOne<ICourses>(Courses, {
+  path: "questions",
+  select: "_id title description options",
+});
 
 export const deleteCourse = deleteOne<ICourses>(Courses);
 

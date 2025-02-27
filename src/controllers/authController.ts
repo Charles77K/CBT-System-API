@@ -102,7 +102,10 @@ export const protect = catchAsync(
     // throws an error if there is no token
     if (!token)
       return next(
-        new AppError("Token is required, please login and try again", 401)
+        new AppError(
+          "Unauthorized user, please login to access this route",
+          401
+        )
       );
 
     // checks if the token is valid

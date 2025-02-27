@@ -5,11 +5,11 @@ export interface ICandidate extends Document {
   firstname: string;
   lastname: string;
   email: string;
-  phone: number | null;
+  phone: string;
   examCode: String;
   exam: mongoose.Types.ObjectId;
   score: number | null;
-  done: boolean;
+  // done: boolean;
 }
 
 const candidateSchema = new Schema<ICandidate>(
@@ -17,11 +17,11 @@ const candidateSchema = new Schema<ICandidate>(
     firstname: String,
     lastname: String,
     email: { type: String, required: true, unique: true },
-    phone: { type: Number, unique: true },
+    phone: { type: String, unique: true },
     examCode: String,
     exam: { type: Schema.Types.ObjectId, ref: "Exam" },
     score: { type: Number, default: null },
-    done: { type: Boolean, default: false },
+    // done: { type: Boolean, default: false },
   },
   {
     timestamps: true,

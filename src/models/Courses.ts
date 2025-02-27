@@ -5,9 +5,22 @@ export interface ICourses extends Document {
   description: string;
 }
 
-const CourseSchema = new Schema<ICourses>({
-  title: { type: String, required: true },
-  description: { type: String, required: true },
+const CourseSchema = new Schema<ICourses>(
+  {
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+  },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
+
+CourseSchema.virtual("questions", {
+  ref: "Question",
+  foreignField: "course",
+  localField: "_id",
 });
 
 const Courses = model<ICourses>("Course", CourseSchema);

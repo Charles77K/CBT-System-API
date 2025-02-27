@@ -1,5 +1,5 @@
 import Candidate, { ICandidate } from "../models/Candidate";
-import express, { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import {
   createOne,
   deleteOne,
@@ -7,7 +7,11 @@ import {
   getOne,
   updateOne,
 } from "./handlerFactory";
-import { catchAsync } from "../utils/catchAsync";
+
+export const setExamIds = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.body.exam) req.body.exam = req.params.examId;
+  next();
+};
 
 export const getAllCandidates = getAll<ICandidate>(Candidate);
 

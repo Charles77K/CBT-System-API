@@ -9,6 +9,8 @@ import { globalErrorHandler } from "./utils/errorHandler";
 import adminRouter from "./routes/adminRoutes";
 import candidateRouter from "./routes/candidateRoutes";
 import examRouter from "./routes/examRoutes";
+import courseRouter from "./routes/courseRoutes";
+import questionRouter from "./routes/questionRoutes";
 
 dotenv.config({
   path: `.env.${process.env.NODE_ENV || "development"}`,
@@ -24,6 +26,8 @@ app.use(compression());
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/candidates", candidateRouter);
 app.use("/api/v1/exam", examRouter);
+app.use("/api/v1/course", courseRouter);
+app.use("/api/v1/question", questionRouter);
 
 const PORT = process.env.PORT || 5000;
 
