@@ -153,9 +153,7 @@ export const autoGradeAttempt = catchAsync(
     }
 
     if (attempt.status !== "submitted") {
-      return next(
-        new AppError("Cannot auto grade attempt once submitted", 400)
-      );
+      return next(new AppError("Cannot only auto grade when submitted", 400));
     }
 
     await attempt.autoGradeObjectiveQuestions();

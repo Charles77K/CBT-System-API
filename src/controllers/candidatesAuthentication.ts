@@ -37,13 +37,10 @@ export const createToken = (
   };
   res.cookie("token", token, cookiesOptions);
 
-  // removes the password from the response object
-  const { password, ...userWithoutPassword } = user.toObject();
-
   res.status(statusCode).json({
     status: "success",
     token,
-    user: userWithoutPassword,
+    user,
   });
 };
 
