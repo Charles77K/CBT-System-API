@@ -2,15 +2,31 @@ import mongoose, { Document, model, Schema } from "mongoose";
 import { z } from "zod";
 
 export interface ICandidate extends Document {
+  _id: string;
   firstname: string;
   lastname: string;
   email: string;
   phone: string;
-  examCode: String;
+  examCode?: String;
   exam: mongoose.Types.ObjectId;
-  score: number | null;
-  // done: boolean;
+  submission: mongoose.Types.ObjectId;
+  verifyExamCode: (examCode: string) => boolean;
 }
+
+export const candidateValidation = z.object({
+  firstname: z
+    .string()
+    .min(2, "firstname should have a minimum of 2 characters")
+    .max(50),
+  lastname: z
+    .string()
+    .min(2, "lastname should have a minimum of 2 characters")
+    .max(50),
+  email: z.string().email("invalid email address"),
+  phone: z.string().min(10).max(15),
+  score: z.number().nullable().optional(),
+  // done: z.boolean().optional(),
+});
 
 const candidateSchema = new Schema<ICandidate>(
   {
@@ -20,7 +36,7 @@ const candidateSchema = new Schema<ICandidate>(
     phone: { type: String, unique: true },
     examCode: String,
     exam: { type: Schema.Types.ObjectId, ref: "Exam" },
-    score: { type: Number, default: null },
+    submission: { type: Schema.Types.ObjectId, ref: "ExamAttempt" },
     // done: { type: Boolean, default: false },
   },
   {
@@ -28,12 +44,23 @@ const candidateSchema = new Schema<ICandidate>(
   }
 );
 
-candidateSchema.pre("save", function (next) {
+async function generateUniqueCodes(): Promise<string> {
+  const code = Math.random().toString(36).substring(2, 7).toUpperCase();
+  const candidateExists = await Candidate.findOne({ examCode: code });
+  return candidateExists ? generateUniqueCodes() : code;
+}
+
+candidateSchema.pre("save", async function (next) {
   if (!this.examCode) {
-    this.examCode = Math.random().toString(36).substring(2, 7).toUpperCase();
+    this.examCode = await generateUniqueCodes();
   }
+
   next();
 });
+
+candidateSchema.methods.verifyExamCode = function (examCode: string) {
+  return this.examCode === examCode;
+};
 
 const Candidate = model<ICandidate>("Candidate", candidateSchema);
 

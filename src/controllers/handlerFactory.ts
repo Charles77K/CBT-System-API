@@ -1,9 +1,14 @@
 import { catchAsync } from "../utils/catchAsync";
 import { Request, Response, NextFunction } from "express";
-import { Model as MongooseModel } from "mongoose";
+import { Model as MongooseModel, PopulateOption } from "mongoose";
 import APIFeatures from "../utils/apiFeatures";
 import { AppError } from "../utils/appError";
 import { ZodSchema } from "zod";
+
+interface IPopulateOptions {
+  path: string;
+  select?: string;
+}
 
 export const createOne = <T>(Model: MongooseModel<T>, validation?: ZodSchema) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -33,7 +38,10 @@ export const createOne = <T>(Model: MongooseModel<T>, validation?: ZodSchema) =>
     });
   });
 
-export const getAll = <T>(Model: MongooseModel<T>) =>
+export const getAll = <T>(
+  Model: MongooseModel<T>,
+  popOptions?: IPopulateOptions[] | IPopulateOptions
+) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const features = new APIFeatures(Model.find(), req.query)
       .filter()
@@ -41,7 +49,19 @@ export const getAll = <T>(Model: MongooseModel<T>) =>
       .limitFields()
       .paginate();
 
-    const data = await features.query;
+    let query = features.query;
+
+    if (popOptions) {
+      if (Array.isArray(popOptions)) {
+        popOptions.forEach((option) => {
+          query = query.populate(option);
+        });
+      } else {
+        query = query.populate(popOptions);
+      }
+    }
+
+    const data = await query;
 
     res.status(200).json({
       status: "success",

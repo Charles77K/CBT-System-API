@@ -3,6 +3,7 @@ import Admin, { adminValidation, IAdmin } from "../models/Admin";
 import * as jwt from "jsonwebtoken";
 import { catchAsync } from "../utils/catchAsync";
 import { AppError } from "../utils/appError";
+import { Document } from "mongoose";
 
 interface AuthenticatedRequest extends Request {
   user: IAdmin;
@@ -16,7 +17,7 @@ interface CookieOptions {
 }
 
 //jwt signature
-const signToken = (id: string) => {
+const adminSignToken = (id: string) => {
   const jwtSecret = process.env.JWT_SECRET;
   if (!jwtSecret) throw new Error("jwt secret is required");
   return jwt.sign({ id }, jwtSecret, {
@@ -25,8 +26,12 @@ const signToken = (id: string) => {
 };
 
 //create token and send response
-const createToken = (user: IAdmin, statusCode: number, res: Response): void => {
-  const token = signToken(user._id);
+export const createToken = (
+  user: IAdmin,
+  statusCode: number,
+  res: Response
+): void => {
+  const token = adminSignToken(user._id);
 
   const cookiesOptions: CookieOptions = {
     expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
