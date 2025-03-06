@@ -8,7 +8,7 @@ export const submitAnswer = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const {
       question,
-      submission,
+      attempt,
       selectedOptionsIds,
       booleanAnswer,
       essayAnswer,
@@ -18,7 +18,7 @@ export const submitAnswer = catchAsync(
 
     const existingAnswer = await Answers.findOne({
       question,
-      submission,
+      attempt,
     });
     if (existingAnswer) {
       return next(
@@ -28,7 +28,7 @@ export const submitAnswer = catchAsync(
 
     const answer = await Answers.create({
       question,
-      submission,
+      attempt,
       selectedOptionsIds: selectedOptionsIds || [],
       booleanAnswer,
       essayAnswer,
@@ -49,7 +49,7 @@ export const getAllAnswers = getAll(Answers, [
   {
     path: "question",
   },
-  { path: "submission" },
+  { path: "attempt" },
 ]);
 
 export const updateAnswer = catchAsync(
@@ -58,7 +58,7 @@ export const updateAnswer = catchAsync(
     const updateData = req.body;
 
     delete updateData.questionRouter;
-    delete updateData.submission;
+    delete updateData.attempt;
 
     const answer = await Answers.findByIdAndUpdate(id, updateData, {
       new: true,

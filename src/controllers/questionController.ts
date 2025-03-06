@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import Question, { questionValidation } from "../models/Question";
+import Question from "../models/Question";
 // import { catchAsync } from "../utils/catchAsync";
 import {
   createOne,
@@ -9,20 +9,13 @@ import {
   updateOne,
 } from "./handlerFactory";
 
-export const setCourseIds = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  if (!req.body.course) req.body.course = req.params.courseId;
-  next();
-};
-
-export const createQuestion = createOne(Question, questionValidation);
+export const createQuestion = createOne(Question);
 
 export const getAllQuestions = getAll(Question);
 
-export const getQuestion = getOne(Question);
+export const getQuestion = getOne(Question, {
+  path: "answers",
+});
 
 export const deleteQuestion = deleteOne(Question);
 

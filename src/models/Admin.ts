@@ -9,7 +9,6 @@ export interface IAdmin extends Document {
   password: string;
   passwordConfirm: string | undefined;
   createdAt: Date;
-  passwordChangedAt: number;
   correctPassword: (candidatePassword: string) => Promise<boolean>;
 }
 
@@ -40,15 +39,12 @@ const adminSchema = new Schema<IAdmin>({
     },
   },
   createdAt: { type: Date, default: Date.now() },
-  passwordChangedAt: Date,
 });
 
 adminSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
   this.password = await bcrypt.hash(this.password, 12);
-
-  this.passwordChangedAt = Date.now() - 1000;
 
   this.passwordConfirm = undefined;
   next();

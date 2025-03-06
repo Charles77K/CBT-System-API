@@ -40,10 +40,18 @@ export const createOne = <T>(Model: MongooseModel<T>, validation?: ZodSchema) =>
 
 export const getAll = <T>(
   Model: MongooseModel<T>,
-  popOptions?: IPopulateOptions[] | IPopulateOptions
+  popOptions?: IPopulateOptions[] | IPopulateOptions,
+  filterField?: string,
+  dbField?: string
 ) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const features = new APIFeatures(Model.find(), req.query)
+    let filter: Record<string, any> = {};
+
+    if (filterField && dbField && req.params[filterField]) {
+      filter = { [dbField]: req.params[filterField] };
+    }
+
+    const features = new APIFeatures(Model.find(filter), req.query)
       .filter()
       .sort()
       .limitFields()

@@ -23,8 +23,8 @@ candidateRouter.use("/:candidateId/attempt", attemptRouter);
 
 candidateRouter
   .route("/")
-  .get(getAllCandidates)
-  .post(setExamIds, authenticateCandidate, createCandidate);
+  .get(setExamIds, getAllCandidates)
+  .post(setExamIds, protect, createCandidate);
 
 candidateRouter.route("/register").post(registerCandidate);
 

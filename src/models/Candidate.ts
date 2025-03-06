@@ -9,7 +9,7 @@ export interface ICandidate extends Document {
   phone: string;
   examCode?: String;
   exam: mongoose.Types.ObjectId;
-  submission: mongoose.Types.ObjectId;
+  attempt: mongoose.Types.ObjectId;
   verifyExamCode: (examCode: string) => boolean;
 }
 
@@ -24,8 +24,6 @@ export const candidateValidation = z.object({
     .max(50),
   email: z.string().email("invalid email address"),
   phone: z.string().min(10).max(15),
-  score: z.number().nullable().optional(),
-  // done: z.boolean().optional(),
 });
 
 const candidateSchema = new Schema<ICandidate>(
@@ -36,8 +34,7 @@ const candidateSchema = new Schema<ICandidate>(
     phone: { type: String, unique: true },
     examCode: String,
     exam: { type: Schema.Types.ObjectId, ref: "Exam" },
-    submission: { type: Schema.Types.ObjectId, ref: "ExamAttempt" },
-    // done: { type: Boolean, default: false },
+    attempt: { type: Schema.Types.ObjectId, ref: "ExamAttempt" },
   },
   {
     timestamps: true,
@@ -55,6 +52,17 @@ candidateSchema.pre("save", async function (next) {
     this.examCode = await generateUniqueCodes();
   }
 
+  next();
+});
+
+candidateSchema.pre(/^find/, function (next) {
+  const query = this as mongoose.Query<ICandidate, ICandidate>;
+  query
+    .populate({
+      path: "exam",
+      select: "name description ",
+    })
+    .populate("attempt");
   next();
 });
 

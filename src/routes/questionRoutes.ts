@@ -5,11 +5,14 @@ import {
   getQuestion,
   deleteQuestion,
   updateQuestion,
-  setCourseIds,
 } from "../controllers/questionController";
 import { protect } from "../controllers/authController";
+import answerRouter from "./answersRoutes";
+import { setCourseIds } from "../controllers/middlewares";
 
 const questionRouter = express.Router({ mergeParams: true });
+
+questionRouter.use("/:id/answer", answerRouter);
 
 questionRouter
   .route("/")

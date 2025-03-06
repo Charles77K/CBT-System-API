@@ -5,6 +5,7 @@ export interface IExam extends Document {
   name: string;
   description: string | null;
   courses: mongoose.Types.ObjectId[];
+  candidates: mongoose.Types.ObjectId[];
   duration: number;
 }
 
@@ -19,19 +20,18 @@ const ExamSchema = new Schema<IExam>(
     name: { type: String, required: true, unique: true },
     description: { type: String },
     courses: [{ type: Schema.Types.ObjectId, ref: "Question" }],
+    candidates: [{ type: Schema.Types.ObjectId, ref: "Candidate" }],
     duration: { type: Number, required: true },
   },
   {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
     timestamps: true,
   }
 );
 
-ExamSchema.virtual("candidates", {
-  ref: "Candidate",
-  foreignField: "exam",
-  localField: "_id",
+ExamSchema.pre(/^find/, function (next) {
+  const query = this as mongoose.Query<IExam, IExam>;
+  query.populate("courses").populate("candidates");
+  next();
 });
 
 const Exam = model<IExam>("Exam", ExamSchema);

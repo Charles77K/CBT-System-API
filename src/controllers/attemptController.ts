@@ -6,18 +6,9 @@ import mongoose from "mongoose";
 import APIFeatures from "../utils/apiFeatures";
 import { ICandidate } from "../models/Candidate";
 
-interface IAuthCandidate extends Request {
+export interface IAuthCandidate extends Request {
   user: ICandidate;
 }
-
-export const setCandidateId = async (
-  req: IAuthCandidate,
-  res: Response,
-  next: NextFunction
-) => {
-  if (!req.body.candidate) req.body.candidate = req.user._id;
-  next();
-};
 
 export const createAttempt = catchAsync(
   async (req: IAuthCandidate, res: Response, next: NextFunction) => {
@@ -122,15 +113,15 @@ export const updateAttempt = catchAsync(
       return next(new AppError("Attempt not found", 404));
     }
 
-    if (attempt.status === "submitted" || attempt.status === "graded") {
+    if (attempt.status === "completed" || attempt.status === "graded") {
       return next(
         new AppError("Cannot update attempt once submitted or graded", 400)
       );
     }
 
-    if (attempt.status === "in-progress" && updateBody.status === "submitted") {
-      updateBody.submittedAt = Date.now;
-    }
+    // if (attempt.status == "in-progress" && updateBody.status == "submitted") {
+    //   updateBody.submittedAt = Date.now;
+    // }
 
     Object.assign(attempt, updateBody);
     await attempt.save();
@@ -152,7 +143,7 @@ export const autoGradeAttempt = catchAsync(
       return next(new AppError("Attempt not found", 404));
     }
 
-    if (attempt.status !== "submitted") {
+    if (attempt.status !== "completed") {
       return next(new AppError("Cannot only auto grade when submitted", 400));
     }
 
@@ -163,7 +154,7 @@ export const autoGradeAttempt = catchAsync(
     res.status(200).json({
       message: "Attempt auto-graded successfully",
       status: "success",
-      data: attempt,
+      totalScore: attempt.totalScore,
     });
   }
 );

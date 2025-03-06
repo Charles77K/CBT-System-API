@@ -2,36 +2,60 @@ import mongoose, { Schema, Document, model } from "mongoose";
 import Answers, { IAnswers } from "./Answers";
 
 interface IExamAttempt {
-  _id?: string;
-  candidate: mongoose.Types.ObjectId | string;
-  exam: mongoose.Types.ObjectId | string;
-  startedAt: Date;
-  submittedAt?: Date;
-  totalScore?: number;
-  status: "in-progress" | "submitted" | "graded";
-  answers: mongoose.Types.ObjectId[];
+  candidate: mongoose.Types.ObjectId;
+  exam: mongoose.Types.ObjectId;
+  startTime: Date;
+  endTime: Date;
+  totalScore: number;
+  maxPossibleScore: number;
+  status: "in-progress" | "completed" | "graded";
+  isPassed: boolean;
+  submittedAnswers: number; // Count of questions answered
+  totalQuestions: number;
   // Optional methods
   autoGradeObjectiveQuestions: () => Promise<IExamAttempt>;
 }
 
 // Modified ExamAttempt schema with enhanced answer handling
-const ExamAttemptSchema = new Schema<IExamAttempt>({
-  candidate: { type: Schema.Types.ObjectId, ref: "Candidate", required: true },
-  exam: { type: Schema.Types.ObjectId, ref: "Exam", required: true },
-  startedAt: { type: Date, default: Date.now },
-  submittedAt: Date,
-  totalScore: { type: Number, default: 0 },
-  status: {
-    type: String,
-    enum: ["in-progress", "submitted", "graded"],
-    default: "in-progress",
-  },
-  answers: [
-    {
+const ExamAttemptSchema = new Schema(
+  {
+    user: {
       type: Schema.Types.ObjectId,
-      ref: "Answers",
+      ref: "User",
+      required: true,
+      index: true,
     },
-  ],
+    exam: {
+      type: Schema.Types.ObjectId,
+      ref: "Exam",
+      required: true,
+      index: true,
+    },
+    startTime: { type: Date, default: Date.now },
+    endTime: { type: Date },
+    totalScore: { type: Number, default: 0 },
+    maxPossibleScore: { type: Number },
+    status: {
+      type: String,
+      enum: ["in-progress", "completed", "abandoned"],
+      default: "in-progress",
+    },
+    isPassed: { type: Boolean },
+    submittedAnswers: { type: Number, default: 0 },
+    totalQuestions: { type: Number, required: true },
+  },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
+
+// Virtual for answers associated with this attempt
+ExamAttemptSchema.virtual("answers", {
+  ref: "Answer",
+  localField: "_id",
+  foreignField: "attempt",
 });
 
 // Example method to add to your ExamAttempt model

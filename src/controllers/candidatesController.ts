@@ -13,11 +13,18 @@ export const setExamIds = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-export const getAllCandidates = getAll<ICandidate>(Candidate);
+export const getAllCandidates = getAll<ICandidate>(
+  Candidate,
+  undefined,
+  "examId",
+  "exam"
+);
 
 export const createCandidate = createOne<ICandidate>(Candidate);
 
-export const getCandidate = getOne<ICandidate>(Candidate);
+export const getCandidate = getOne<ICandidate>(Candidate, {
+  path: "attempt",
+});
 
 export const deleteCandidate = deleteOne<ICandidate>(Candidate);
 

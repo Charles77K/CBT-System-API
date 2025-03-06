@@ -11,6 +11,8 @@ import candidateRouter from "./routes/candidateRoutes";
 import examRouter from "./routes/examRoutes";
 import courseRouter from "./routes/courseRoutes";
 import questionRouter from "./routes/questionRoutes";
+import attemptRouter from "./routes/examAttemptRoutes";
+import answerRouter from "./routes/answersRoutes";
 
 dotenv.config({
   path: `.env.${process.env.NODE_ENV || "development"}`,
@@ -19,7 +21,12 @@ dotenv.config({
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(helmet());
 app.use(compression());
 
@@ -28,6 +35,8 @@ app.use("/api/v1/candidates", candidateRouter);
 app.use("/api/v1/exam", examRouter);
 app.use("/api/v1/course", courseRouter);
 app.use("/api/v1/question", questionRouter);
+app.use("/api/v1/attempt", attemptRouter);
+app.use("/api/v1/answer", answerRouter);
 
 const PORT = process.env.PORT || 5000;
 

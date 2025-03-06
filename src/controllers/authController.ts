@@ -138,3 +138,26 @@ export const protect = catchAsync(
     next();
   }
 );
+
+export const getMe = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const authUser = req as AuthenticatedRequest;
+  if (!authUser.user) return next(new AppError("Not authenticated", 401));
+  res.status(200).json({
+    status: "success",
+    data: authUser.user,
+  });
+};
+
+export const logout = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    });
+    res.status(200).json({ status: "success", message: "Logged out" });
+  }
+);

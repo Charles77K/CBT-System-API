@@ -2,7 +2,7 @@ import { Document, Schema, model } from "mongoose";
 
 export interface IAnswers extends Document {
   question: Schema.Types.ObjectId;
-  submission: Schema.Types.ObjectId;
+  attempt: Schema.Types.ObjectId;
   selectedOptionIds: string[];
   booleanAnswer: boolean;
   essayAnswer: string;
@@ -14,9 +14,9 @@ export interface IAnswers extends Document {
 
 const answerSchema = new Schema({
   question: { type: Schema.Types.ObjectId, ref: "Question", required: true },
-  submission: {
+  attempt: {
     type: Schema.Types.ObjectId,
-    ref: "Submission",
+    ref: "ExamAttempt",
     required: true,
   },
   selectedOptionIds: [{ type: String, required: true }],
