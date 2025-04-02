@@ -26,7 +26,11 @@ export const setCourseIds = (
 
 export const setQuestionId = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.body.question) req.body.question = req.params.id;
+    if (!req.body.question && Array.isArray(req.body)) {
+      req.body.map((option) => (option.question = req.params.questionId));
+    } else {
+      req.body.question = req.params.questionId;
+    }
     next();
   }
 );

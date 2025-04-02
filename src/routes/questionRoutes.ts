@@ -9,10 +9,12 @@ import {
 import { protect } from "../controllers/authController";
 import answerRouter from "./answersRoutes";
 import { setCourseIds } from "../controllers/middlewares";
+import optionRouter from "./optionRoutes";
 
 const questionRouter = express.Router({ mergeParams: true });
 
 questionRouter.use("/:id/answer", answerRouter);
+questionRouter.use("/:questionId/option", optionRouter);
 
 questionRouter
   .route("/")

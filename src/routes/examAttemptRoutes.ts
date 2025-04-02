@@ -9,7 +9,7 @@ import {
 } from "../controllers/attemptController";
 import { authenticateCandidate } from "../controllers/candidatesAuthentication";
 
-const attemptRouter = express.Router({ mergeParams: true });
+const attemptRouter = express.Router();
 
 attemptRouter.use(authenticateCandidate);
 

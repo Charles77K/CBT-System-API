@@ -11,10 +11,15 @@ import {
 
 export const createQuestion = createOne(Question);
 
-export const getAllQuestions = getAll(Question);
+export const getAllQuestions = getAll(
+  Question,
+  undefined,
+  "courseId",
+  "course"
+);
 
 export const getQuestion = getOne(Question, {
-  path: "answers",
+  path: "answers options",
 });
 
 export const deleteQuestion = deleteOne(Question);

@@ -6,7 +6,6 @@ export interface IQuestion extends Document {
   type: "multiple-choice" | "true-false" | "essay";
   course: mongoose.Types.ObjectId;
   difficulty: "easy" | "medium" | "hard";
-  // Options are now referenced, not embedded
 }
 
 const QuestionSchema = new Schema(

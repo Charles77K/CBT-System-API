@@ -41,6 +41,8 @@ const candidateSchema = new Schema<ICandidate>(
   }
 );
 
+candidateSchema.index({ exam: 1 });
+
 async function generateUniqueCodes(): Promise<string> {
   const code = Math.random().toString(36).substring(2, 7).toUpperCase();
   const candidateExists = await Candidate.findOne({ examCode: code });

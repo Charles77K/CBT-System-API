@@ -13,6 +13,7 @@ import courseRouter from "./routes/courseRoutes";
 import questionRouter from "./routes/questionRoutes";
 import attemptRouter from "./routes/examAttemptRoutes";
 import answerRouter from "./routes/answersRoutes";
+import optionRouter from "./routes/optionRoutes";
 
 dotenv.config({
   path: `.env.${process.env.NODE_ENV || "development"}`,
@@ -37,6 +38,7 @@ app.use("/api/v1/course", courseRouter);
 app.use("/api/v1/question", questionRouter);
 app.use("/api/v1/attempt", attemptRouter);
 app.use("/api/v1/answer", answerRouter);
+app.use("/api/v1/option", optionRouter);
 
 const PORT = process.env.PORT || 5000;
 

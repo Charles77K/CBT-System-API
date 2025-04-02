@@ -9,7 +9,12 @@ import {
 
 export const createCourse = createOne<ICourses>(Courses);
 
-export const getAllCourses = getAll<ICourses>(Courses);
+export const getAllCourses = getAll<ICourses>(
+  Courses,
+  undefined,
+  "questionId",
+  "question"
+);
 
 export const getCourse = getOne<ICourses>(Courses, {
   path: "questions",
