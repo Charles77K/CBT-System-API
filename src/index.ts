@@ -48,3 +48,5 @@ app.listen(PORT, (): void => {
 });
 
 app.use(globalErrorHandler);
+
+export default app;
