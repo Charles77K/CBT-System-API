@@ -39,13 +39,13 @@ app.use("/api/v1/attempt", attemptRouter);
 app.use("/api/v1/answer", answerRouter);
 app.use("/api/v1/option", optionRouter);
 
+app.use(globalErrorHandler);
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, (): void => {
   console.log(`Server running on port ${PORT}`);
   connectDB();
 });
-
-app.use(globalErrorHandler);
 
 export default app;
