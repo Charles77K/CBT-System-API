@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Application } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./db/db";
@@ -17,14 +17,16 @@ dotenv.config({
   path: `.env.${process.env.NODE_ENV || "development"}`,
 });
 
-const app = express();
+const app: Application = express();
 
 app.use(express.json());
 app.use(cors());
 
+connectDB();
+
+app.use("/api/v1/exam", examRouter);
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/candidates", candidateRouter);
-app.use("/api/v1/exam", examRouter);
 app.use("/api/v1/course", courseRouter);
 app.use("/api/v1/question", questionRouter);
 app.use("/api/v1/attempt", attemptRouter);
@@ -37,7 +39,6 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, (): void => {
   console.log(`Server running on port ${PORT}`);
-  connectDB();
 });
 
 export default app;
