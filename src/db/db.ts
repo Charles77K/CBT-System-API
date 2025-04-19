@@ -10,7 +10,6 @@ const connectDB = async (): Promise<void> => {
     );
     console.log("connected to mongoDB DATABASE...");
   } catch (err: unknown) {
-    console.error(err);
     process.exit(1); // Exit on failure
   }
 };
