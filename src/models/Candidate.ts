@@ -58,11 +58,11 @@ candidateSchema.pre("save", async function (next) {
 });
 
 candidateSchema.pre(/^find/, function (next) {
-  const query = this as mongoose.Query<ICandidate, ICandidate>;
+  const query = this as mongoose.Query<any, ICandidate>;
   query
     .populate({
       path: "exam",
-      select: "name description ",
+      select: "name description",
     })
     .populate("attempt");
   next();

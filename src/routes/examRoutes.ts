@@ -9,7 +9,9 @@ import {
 import { protect } from "../controllers/authController";
 import candidateRouter from "./candidateRoutes";
 
-const examRouter = express.Router();
+const examRouter = express.Router({
+  mergeParams: true,
+});
 
 examRouter.use("/:examId/candidate", candidateRouter);
 

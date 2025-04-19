@@ -25,10 +25,6 @@ app.use(express.json());
 app.use(cors());
 app.use(helmet());
 app.use(compression());
-// {
-//     origin: "http://localhost:5173",
-//     credentials: true,
-//   }
 
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/candidates", candidateRouter);

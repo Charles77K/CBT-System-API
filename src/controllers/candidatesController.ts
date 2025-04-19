@@ -15,7 +15,9 @@ export const setExamIds = (req: Request, res: Response, next: NextFunction) => {
 
 export const getAllCandidates = getAll<ICandidate>(
   Candidate,
-  undefined,
+  {
+    path: "exam",
+  },
   "examId",
   "exam"
 );

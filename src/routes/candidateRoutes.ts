@@ -8,6 +8,7 @@ import {
 } from "../controllers/candidatesController";
 import { protect } from "../controllers/authController";
 import { setExamIds } from "../controllers/candidatesController";
+import examRouter from "./examRoutes";
 import {
   loginCandidate,
   registerCandidate,
