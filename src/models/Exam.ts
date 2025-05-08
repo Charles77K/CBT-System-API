@@ -13,6 +13,8 @@ export const examValidation = z.object({
   name: z.string().min(3).max(100),
   description: z.string().nullable().optional(),
   duration: z.number().min(1).positive(),
+  candidates: z.string(),
+  courses: z.string(),
 });
 
 const ExamSchema = new Schema<IExam>(
@@ -20,7 +22,7 @@ const ExamSchema = new Schema<IExam>(
     name: { type: String, required: true, unique: true },
     description: { type: String },
     courses: [{ type: Schema.Types.ObjectId, ref: "Question" }],
-    candidates: [{ type: Schema.Types.ObjectId, ref: "Candidate" }],
+    candidates: [{ type: mongoose.Schema.ObjectId, ref: "Candidate" }],
     duration: { type: Number, required: true },
   },
   {

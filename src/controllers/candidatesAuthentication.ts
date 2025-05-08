@@ -79,7 +79,9 @@ export const registerCandidate = catchAsync(
       );
 
     //if candidate doesn't exist create a new candidate with the data returned from zod
-    const newUser = await Candidate.create(parsedSchema.data);
+    const newUser = await (
+      await Candidate.create(parsedSchema.data)
+    ).populate("exam", "_id name description");
 
     //send token with the new user
     createToken(newUser, 201, res);

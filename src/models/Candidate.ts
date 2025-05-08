@@ -23,7 +23,12 @@ export const candidateValidation = z.object({
     .min(2, "lastname should have a minimum of 2 characters")
     .max(50),
   email: z.string().email("invalid email address"),
-  phone: z.string().min(10).max(15),
+  phone: z
+    .string()
+    .min(10, "Phone number should be more than 10 characters")
+    .max(15),
+  exam: z.string(),
+  attempt: z.string().optional(),
 });
 
 const candidateSchema = new Schema<ICandidate>(
@@ -32,16 +37,20 @@ const candidateSchema = new Schema<ICandidate>(
     lastname: String,
     email: { type: String, required: true, unique: true },
     phone: { type: String, unique: true },
-    examCode: String,
-    exam: { type: Schema.Types.ObjectId, ref: "Exam" },
-    attempt: { type: Schema.Types.ObjectId, ref: "ExamAttempt" },
+    examCode: { type: String, unique: true },
+    exam: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Exam",
+      required: [true, "A candidate must be registered under an exam"],
+    },
+    attempt: { type: mongoose.Schema.ObjectId, ref: "ExamAttempt" },
   },
   {
     timestamps: true,
   }
 );
 
-candidateSchema.index({ exam: 1 });
+candidateSchema.index({ exam: 1 }, { unique: true });
 
 async function generateUniqueCodes(): Promise<string> {
   const code = Math.random().toString(36).substring(2, 7).toUpperCase();
